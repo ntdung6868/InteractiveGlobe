@@ -1,0 +1,406 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    overflow: hidden;
+    height: 100vh;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    margin: 0;
+    padding: 10px;
+    gap: 10px;
+    height: 100vh;
+    overflow: hidden;
+}
+
+@media (min-width: 992px) {
+    .container {
+        flex-direction: row;
+    }
+}
+
+.controls {
+    flex: 0 0 auto;
+    padding: 15px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e6e6e6;
+    overflow: hidden;
+}
+
+@media (min-width: 992px) {
+    .controls {
+        margin-right: 10px;
+        margin-bottom: 0;
+        width: 300px;
+        height: calc(100vh - 20px);
+        overflow-y: auto;
+    }
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #1a73e8;
+}
+
+.control-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    background-color: white;
+}
+
+.info-panel {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    max-height: calc(100% - 150px);
+}
+
+#selected-country {
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+#continent-info {
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+#continent-name {
+    font-weight: 600;
+}
+
+#countries-list {
+    margin-top: 12px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    max-height: calc(100% - 90px);
+}
+
+#countries-list h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+#continent-countries {
+    list-style-position: inside;
+    padding-left: 5px;
+    flex-grow: 1;
+    overflow-y: auto;
+    max-height: 100%;
+    font-size: 15px;
+}
+
+#continent-countries li {
+    margin-bottom: 5px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+#continent-countries li:hover {
+    background-color: #f0f8ff;
+    cursor: pointer;
+}
+
+/* Style thanh cuộn */
+#continent-countries::-webkit-scrollbar {
+    width: 8px;
+}
+
+#continent-countries::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+#continent-countries::-webkit-scrollbar-thumb {
+    background: #c1d1e0;
+    border-radius: 4px;
+}
+
+#continent-countries::-webkit-scrollbar-thumb:hover {
+    background: #a0b8cc;
+}
+
+/* Đảm bảo thanh cuộn hoạt động trên Firefox */
+#continent-countries {
+    scrollbar-width: thin;
+    scrollbar-color: #c1d1e0 #f1f1f1;
+}
+
+#globe-container {
+    flex: 1 1 auto;
+    height: calc(100vh - 20px);
+    background-color: #f8f9fb;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    position: relative;
+    border: 1px solid #e6e6e6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+svg {
+    width: 100%;
+    height: 100%;
+    background-color: #e8f0f8;
+    border-radius: 10px;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.05);
+    overflow: visible;
+}
+
+.country {
+    fill: #b6b6b6;
+    stroke: #fff;
+    stroke-width: 0.5px;
+    vector-effect: non-scaling-stroke;
+    transition: fill 0.3s ease;
+}
+
+.country:hover {
+    fill: #d8d8d8;
+    cursor: pointer;
+    filter: brightness(1.1);
+}
+
+.country-selected {
+    fill: #3498db !important;
+    stroke: #fff;
+    stroke-width: 1px;
+    filter: drop-shadow(0 0 2px rgba(52, 152, 219, 0.5));
+}
+
+.country-same-continent {
+    fill: #9bc2e6 !important;
+}
+
+.country-label {
+    font-size: 10px;
+    text-anchor: middle;
+    pointer-events: none;
+    fill: #333;
+    font-weight: 600;
+    text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff, 0 0 4px #fff;
+    letter-spacing: 0.7px;
+}
+
+.selected-country-label {
+    font-size: 14px;
+    font-weight: 700;
+    fill: #1a73e8;
+    text-shadow: -1.5px -1.5px 0 #fff, 1.5px -1.5px 0 #fff, -1.5px 1.5px 0 #fff, 1.5px 1.5px 0 #fff, 0 0 6px #fff;
+}
+
+.ocean {
+    fill: #e8f0f8;
+    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.1));
+}
+
+.ocean-border {
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.08));
+}
+
+.graticule {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 0.3px;
+    opacity: 0.4;
+}
+
+/* Loading indicator */
+.loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.loading p {
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+/* Error message */
+.error-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 90%;
+}
+
+.error-message p {
+    margin: 10px 0;
+    font-size: 14px;
+}
+
+#status-message {
+    margin-bottom: 15px;
+    padding: 8px;
+    border-radius: 4px;
+    background-color: #f8f9fa;
+}
+
+#status-message p {
+    margin: 0;
+    padding: 0;
+}
+
+#reload-button {
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    padding: 8px 15px;
+    margin-top: 10px;
+}
+
+#reload-button:hover {
+    background-color: #0d5bbb;
+}
+
+#retry-button {
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#retry-button:hover {
+    background-color: #0d5bbb;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .container {
+        padding: 5px;
+        gap: 5px;
+    }
+
+    h1 {
+        font-size: 22px;
+        margin-bottom: 10px;
+    }
+
+    #globe-container {
+        height: calc(100vh - 270px); /* Điều chỉnh do tăng font size */
+        padding: 10px;
+    }
+
+    .country-label {
+        font-size: 8px;
+    }
+
+    .controls {
+        height: 250px; /* Tăng lên do font lớn hơn */
+        max-height: 250px;
+        overflow-y: auto;
+    }
+
+    #selected-country {
+        font-size: 20px;
+        margin-bottom: 6px;
+    }
+
+    #continent-info {
+        font-size: 15px;
+        margin-bottom: 10px;
+    }
+
+    #countries-list h3 {
+        font-size: 15px;
+        margin-bottom: 6px;
+    }
+
+    #continent-countries {
+        font-size: 14px;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .container {
+        padding: 3px;
+        gap: 3px;
+    }
+
+    .controls {
+        padding: 10px;
+        height: 240px; /* Điều chỉnh */
+        max-height: 240px;
+    }
+
+    h1 {
+        font-size: 20px;
+        margin-bottom: 8px;
+    }
+
+    #globe-container {
+        height: calc(100vh - 250px); /* Điều chỉnh */
+        padding: 10px;
+    }
+
+    label {
+        font-size: 15px;
+        margin-bottom: 5px;
+    }
+
+    select {
+        padding: 8px;
+        font-size: 15px;
+    }
+
+    #reload-button {
+        padding: 7px 12px;
+        font-size: 14px;
+    }
+}

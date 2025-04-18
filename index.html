@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Interactive Globe</title>
+        <link rel="stylesheet" href="public/css/styles.css" />
+    </head>
+    <body>
+        <div class="container">
+            <div class="controls">
+                <h1>Interactive Globe</h1>
+                <div id="status-message"></div>
+                <div class="control-group">
+                    <label for="country-select">Chọn quốc gia:</label>
+                    <select id="country-select">
+                        <option value="">-- Chọn quốc gia --</option>
+                    </select>
+                    <button id="reload-button" style="margin-top: 10px; padding: 5px 10px">Tải lại dữ liệu</button>
+                </div>
+                <div class="info-panel">
+                    <h2 id="selected-country">Chưa chọn quốc gia</h2>
+                    <p id="continent-info">Châu lục: <span id="continent-name">-</span></p>
+                    <div id="countries-list">
+                        <h3>Các quốc gia cùng châu lục:</h3>
+                        <ul id="continent-countries"></ul>
+                    </div>
+                </div>
+            </div>
+            <div id="globe-container">
+                <!-- D3 sẽ tạo SVG cho địa cầu ở đây -->
+            </div>
+        </div>
+
+        <!-- Tải các thư viện D3 -->
+        <script src="https://d3js.org/d3.v7.min.js"></script>
+        <script src="https://d3js.org/d3-geo.v3.min.js"></script>
+        <script src="https://d3js.org/topojson.v3.min.js"></script>
+
+        <!-- Scripts chính của ứng dụng -->
+        <script src="src/globe.js"></script>
+        <script src="src/app.js"></script>
+
+        <script>
+            // Xử lý nút tải lại
+            document.getElementById("reload-button").addEventListener("click", function () {
+                const statusMessage = document.getElementById("status-message");
+                statusMessage.innerHTML = '<p style="color: blue;">Đang tải lại dữ liệu...</p>';
+
+                // Tải lại trang
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            });
+
+            // Thiết lập hàm ghi log debug - chỉ ghi log vào console, không hiển thị trên giao diện
+            window.debugLog = function (message, data) {
+                console.log(message, data);
+                // Đã loại bỏ phần thêm nội dung vào giao diện
+            };
+
+            // Kiểm tra kết nối internet
+            function updateOnlineStatus() {
+                const statusMessage = document.getElementById("status-message");
+                if (navigator.onLine) {
+                    statusMessage.innerHTML = '<p style="color: green;">Đã kết nối internet</p>';
+                } else {
+                    statusMessage.innerHTML =
+                        '<p style="color: red;">Không có kết nối internet. Vui lòng kiểm tra kết nối và tải lại trang.</p>';
+                }
+            }
+
+            window.addEventListener("online", updateOnlineStatus);
+            window.addEventListener("offline", updateOnlineStatus);
+            updateOnlineStatus();
+        </script>
+    </body>
+</html>
