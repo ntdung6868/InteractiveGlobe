@@ -546,9 +546,9 @@ class Globe {
                     const dx = dragEnd[0] - this.dragStart[0];
                     const dy = dragEnd[1] - this.dragStart[1];
 
-                    // Cập nhật góc xoay
+                    // Cập nhật góc xoay - chỉ đảo ngược hướng xoay dọc
                     this.rotation.x = (this.rotation.x + dx * this.rotationSpeed) % 360;
-                    this.rotation.y = Math.max(-90, Math.min(90, this.rotation.y + dy * this.rotationSpeed));
+                    this.rotation.y = Math.max(-90, Math.min(90, this.rotation.y - dy * this.rotationSpeed));
 
                     // Cập nhật phép chiếu
                     this.projection.rotate([this.rotation.x, this.rotation.y, this.rotation.z]);
@@ -580,7 +580,7 @@ class Globe {
         this.autoRotationInterval = setInterval(() => {
             if (this.dragging) return;
 
-            // Cập nhật góc xoay
+            // Cập nhật góc xoay - giữ nguyên hướng xoay ngang
             this.rotation.x = (this.rotation.x + 0.2) % 360;
 
             // Cập nhật phép chiếu
