@@ -660,25 +660,33 @@ class Globe {
      * Chọn quốc gia
      */
     selectCountry(countryCode) {
-        if (!countryCode || !this.worldData) return;
+        console.log("Bắt đầu chọn quốc gia:", countryCode);
+
+        if (!countryCode || !this.worldData) {
+            console.error("Thiếu mã quốc gia hoặc dữ liệu thế giới");
+            return;
+        }
 
         // Lưu quốc gia được chọn
         this.selectedCountry = countryCode;
+        console.log("Quốc gia được chọn:", countryCode);
 
         // Lấy thông tin châu lục
         const countryInfo = this.countryNamesByCode[countryCode];
         if (countryInfo) {
             this.selectedContinent = countryInfo.continent;
+            console.log("Châu lục của quốc gia:", this.selectedContinent);
 
             // Kiểm tra xem có châu lục hay không
             if (!this.selectedContinent || this.selectedContinent === "Không xác định") {
-                // console.warn(`Không thể xác định châu lục cho quốc gia: ${countryInfo.name}`);
+                console.warn(`Không thể xác định châu lục cho quốc gia: ${countryInfo.name}`);
                 // Gán một châu lục cố định dựa trên mã quốc gia để demo
                 this.setDefaultContinent(countryCode);
             }
 
             // Tìm tất cả các quốc gia cùng châu lục
             this.findCountriesInSameContinent(countryCode);
+            console.log("Các quốc gia cùng châu lục:", this.continentCountries);
 
             // Thông báo sự kiện chọn quốc gia
             const event = new CustomEvent("country-selected", {
@@ -691,7 +699,7 @@ class Globe {
             });
             document.dispatchEvent(event);
         } else {
-            // console.error(`Không tìm thấy thông tin cho quốc gia có mã: ${countryCode}`);
+            console.error(`Không tìm thấy thông tin cho quốc gia có mã: ${countryCode}`);
         }
 
         // Xoay đến quốc gia được chọn
@@ -975,14 +983,27 @@ class Globe {
      * Cập nhật style cho các quốc gia
      */
     updateCountryStyles() {
+        console.log("Bắt đầu cập nhật style cho các quốc gia");
+        console.log("Quốc gia được chọn:", this.selectedCountry);
+        console.log("Châu lục được chọn:", this.selectedContinent);
+
         this.svg.selectAll(".country").attr("class", (d) => {
+            if (!d || d.id === undefined) return "country";
+
             const countryCode = this.getCountryCodeFromId(d.id);
             let classes = "country";
 
             if (countryCode === this.selectedCountry) {
                 classes += " country-selected";
-            } else if (this.selectedContinent && this.getCountryContinent(countryCode) === this.selectedContinent) {
-                classes += " country-same-continent";
+                console.log("Tô sáng quốc gia được chọn:", countryCode);
+            } else {
+                const countryContinent = this.getCountryContinent(countryCode);
+                console.log(`Kiểm tra châu lục cho ${countryCode}:`, countryContinent);
+
+                if (this.selectedContinent && countryContinent === this.selectedContinent) {
+                    classes += " country-same-continent";
+                    console.log("Tô sáng quốc gia cùng châu lục:", countryCode);
+                }
             }
 
             return classes;
@@ -1121,7 +1142,20 @@ class Globe {
         if (!countryCode) return null;
 
         const countryInfo = this.countryNamesByCode[countryCode];
-        return countryInfo ? countryInfo.continent : null;
+        if (!countryInfo) {
+            console.warn(`Không tìm thấy thông tin cho quốc gia: ${countryCode}`);
+            return null;
+        }
+
+        // Kiểm tra và chuẩn hóa tên châu lục
+        const continent = countryInfo.continent;
+        if (!continent || continent === "Không xác định") {
+            // Thử lấy từ bảng ánh xạ mặc định
+            const continentMap = this.getDefaultContinentMap();
+            return continentMap[countryCode] || null;
+        }
+
+        return continent;
     }
 
     createErrorMessage(message) {
