@@ -621,6 +621,7 @@ class Globe {
 
         // Dừng xoay tự động
         this.stopAutoRotation();
+        this.autoRotationEnabled = false; // Tắt xoay tự động
 
         // Lưu góc xoay hiện tại
         const startRotation = [this.rotation.x, this.rotation.y, this.rotation.z];
@@ -650,10 +651,8 @@ class Globe {
                 };
             })
             .on("end", () => {
-                // Bắt đầu xoay tự động lại sau khi hoàn thành nếu cần
-                if (this.autoRotationEnabled) {
-                    this.startAutoRotation();
-                }
+                // Không bắt đầu xoay tự động lại sau khi hoàn thành
+                // Để người dùng có thể quan sát quốc gia được chọn
             });
     }
 
