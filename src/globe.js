@@ -774,7 +774,8 @@ class Globe {
             CAF: "Africa",
             TCD: "Africa",
             COM: "Africa",
-            COD: "Africa",
+            COD: "Africa", // Congo (Democratic Republic)
+            COG: "Africa", // Congo (Republic)
             DJI: "Africa",
             EGY: "Africa",
             GNQ: "Africa",
@@ -816,9 +817,12 @@ class Globe {
             TZA: "Africa",
             ZMB: "Africa",
             ZWE: "Africa",
+            ESH: "Africa", // Western Sahara
 
             // Châu Á
             AFG: "Asia",
+            ARM: "Asia",
+            AZE: "Asia",
             BHR: "Asia",
             BGD: "Asia",
             BTN: "Asia",
@@ -855,6 +859,7 @@ class Globe {
             TWN: "Asia",
             TJK: "Asia",
             THA: "Asia",
+            TLS: "Asia", // Timor-Leste
             TUR: "Asia",
             TKM: "Asia",
             ARE: "Asia",

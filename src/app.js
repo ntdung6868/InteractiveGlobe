@@ -82,7 +82,7 @@ async function loadCountryData() {
 
             const data = await response.json();
             console.log(`Đã tải thành công ${data.length} quốc gia`);
-            return data;
+            return data.filter((country) => country["alpha-3"] !== "ALA"); // Bỏ qua Åland Islands
         } catch (error) {
             console.error(`Lỗi khi tải từ nguồn ${source}:`, error);
             // Tiếp tục thử nguồn tiếp theo
