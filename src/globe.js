@@ -513,15 +513,49 @@ class Globe {
                     if (r < Math.PI / 2) {
                         // Thêm nhãn
                         const labelClass = isSelected ? "country-label selected-country-label" : "country-label";
-                        this.svg
+                        const label = this.svg
                             .append("text")
                             .attr("class", labelClass)
                             .attr("transform", `translate(${centroid[0]},${centroid[1]})`)
                             .text(countryInfo.name);
+
+                        // Kiểm tra kích thước màn hình
+                        const isMobile = window.innerWidth <= 768;
+                        
+                        // Điều chỉnh kích thước và vị trí nhãn cho mobile
+                        if (isMobile) {
+                            label
+                                .attr("font-size", "10px") // Giảm kích thước font
+                                .attr("text-anchor", "middle")
+                                .attr("dy", "0.35em")
+                                .style("pointer-events", "none"); // Tắt tương tác trên mobile
+                        } else {
+                            label
+                                .attr("font-size", "12px")
+                                .attr("text-anchor", "middle")
+                                .attr("dy", "0.35em");
+                        }
+
+                        // Thêm hiệu ứng hover cho desktop
+                        if (!isMobile) {
+                            label
+                                .style("cursor", "pointer")
+                                .on("mouseover", function() {
+                                    d3.select(this).classed("label-hover", true);
+                                })
+                                .on("mouseout", function() {
+                                    d3.select(this).classed("label-hover", false);
+                                })
+                                .on("click", () => {
+                                    if (window.globe) {
+                                        window.globe.selectCountry(countryCode);
+                                    }
+                                });
+                        }
                     }
                 }
             } catch (error) {
-                // console.warn("Lỗi khi tính toán vị trí nhãn:", error);
+                console.warn("Lỗi khi tính toán vị trí nhãn:", error);
             }
         }
     }
