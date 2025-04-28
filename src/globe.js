@@ -606,6 +606,10 @@ class Globe {
             d3
                 .zoom()
                 .scaleExtent([0.5, 4]) // Giới hạn tỷ lệ zoom từ 0.5x đến 4x
+                .on("start", function (event) {
+                    // Ngăn chặn hành vi mặc định của trình duyệt
+                    event.sourceEvent.preventDefault();
+                })
                 .on("zoom", (event) => {
                     // Chỉ xử lý zoom trên mobile
                     if (window.innerWidth <= 768) {
@@ -632,6 +636,11 @@ class Globe {
                     }
                 })
         );
+
+        // Thêm xử lý touch events
+        this.svg.on("touchstart", function (event) {
+            event.preventDefault();
+        });
     }
 
     /**
