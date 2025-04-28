@@ -521,7 +521,7 @@ class Globe {
 
                         // Kiểm tra kích thước màn hình
                         const isMobile = window.innerWidth <= 768;
-                        
+
                         // Điều chỉnh kích thước và vị trí nhãn cho mobile
                         if (isMobile) {
                             label
@@ -530,20 +530,17 @@ class Globe {
                                 .attr("dy", "0.35em")
                                 .style("pointer-events", "none"); // Tắt tương tác trên mobile
                         } else {
-                            label
-                                .attr("font-size", "12px")
-                                .attr("text-anchor", "middle")
-                                .attr("dy", "0.35em");
+                            label.attr("font-size", "12px").attr("text-anchor", "middle").attr("dy", "0.35em");
                         }
 
                         // Thêm hiệu ứng hover cho desktop
                         if (!isMobile) {
                             label
                                 .style("cursor", "pointer")
-                                .on("mouseover", function() {
+                                .on("mouseover", function () {
                                     d3.select(this).classed("label-hover", true);
                                 })
-                                .on("mouseout", function() {
+                                .on("mouseout", function () {
                                     d3.select(this).classed("label-hover", false);
                                 })
                                 .on("click", () => {
@@ -600,6 +597,38 @@ class Globe {
                     this.dragging = false;
                     if (this.autoRotationEnabled) {
                         this.startAutoRotation();
+                    }
+                })
+        );
+
+        // Thêm xử lý zoom bằng 2 ngón tay trên mobile
+        this.svg.call(
+            d3
+                .zoom()
+                .scaleExtent([0.5, 4]) // Giới hạn tỷ lệ zoom từ 0.5x đến 4x
+                .on("zoom", (event) => {
+                    // Chỉ xử lý zoom trên mobile
+                    if (window.innerWidth <= 768) {
+                        const scale = event.transform.k;
+                        const currentScale = this.projection.scale();
+                        const newScale = currentScale * scale;
+
+                        // Giới hạn tỷ lệ zoom
+                        const minScale = Math.min(this.width, this.height) * 0.2;
+                        const maxScale = Math.min(this.width, this.height) * 0.8;
+
+                        if (newScale >= minScale && newScale <= maxScale) {
+                            this.projection.scale(newScale);
+                            this.svg.selectAll("path").attr("d", this.path);
+
+                            // Cập nhật đường viền đại dương
+                            const centerX = this.width / 2;
+                            const centerY = this.height / 2;
+                            this.svg.select(".ocean-border").attr("r", newScale + 1);
+                            this.svg.select(".ocean").attr("r", newScale);
+
+                            this.updateLabels();
+                        }
                     }
                 })
         );
